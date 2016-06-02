@@ -1,6 +1,9 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
+import de.sirati97.sb.skylands.gen.pop.SkyGlowstonePopulator;
+import de.sirati97.sb.skylands.gen.pop.nms.WorldGenSkyGlowstone;
 import net.minecraft.server.v1_8_R3.Block;
+import net.minecraft.server.v1_8_R3.BlockFlowers;
 import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.ChunkSnapshot;
 import net.minecraft.server.v1_8_R3.IChunkProvider;
@@ -8,16 +11,17 @@ import net.minecraft.server.v1_8_R3.NoiseGeneratorOctaves;
 import net.minecraft.server.v1_8_R3.WorldGenCanyon;
 import net.minecraft.server.v1_8_R3.WorldGenCaves;
 import net.minecraft.server.v1_8_R3.WorldGenCavesHell;
+import net.minecraft.server.v1_8_R3.WorldGenFlowers;
 import net.minecraft.server.v1_8_R3.WorldGenLargeFeature;
 import net.minecraft.server.v1_8_R3.WorldGenMineshaft;
 import net.minecraft.server.v1_8_R3.WorldGenNether;
 import net.minecraft.server.v1_8_R3.WorldGenStronghold;
 import net.minecraft.server.v1_8_R3.WorldGenVillage;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.generator.BlockPopulator;
 import uk.co.jacekk.bukkit.skylandsplus.util.ReflectionUtils;
 
@@ -35,17 +39,28 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 	private NoiseGeneratorOctaves o;
 	private NoiseGeneratorOctaves a;
 	private NoiseGeneratorOctaves b;
+
+    private final static WorldGenCaves caveGen = new WorldGenCaves();
+    private final static WorldGenCavesHell caveHellGen = new WorldGenCavesHell();
 	
-	private WorldGenCaves caveGen;
-	
-	private WorldGenCanyon canyonGen;
-	private WorldGenStronghold strongholdGen;
-	private WorldGenMineshaft mineshaftGen;
-	private WorldGenVillage villageGen;
-	private WorldGenLargeFeature largefeatureGen;
-	
-	private WorldGenCavesHell caveGenNether;
-	private WorldGenNether genNetherFort;
+	private final static WorldGenCanyon canyonGen = new WorldGenCanyon();
+	private final static WorldGenStronghold strongholdGen = new WorldGenStronghold();
+	private final static WorldGenMineshaft mineshaftGen = new WorldGenMineshaft();
+	private final static WorldGenVillage villageGen = new WorldGenVillage();
+    private final static WorldGenLargeFeature largeFeatureGen = new WorldGenLargeFeature();
+    private final static WorldGenFlowers[] worldGenFlowers;
+    public final static WorldGenSkyGlowstone worldGenSkyGlowstone = new WorldGenSkyGlowstone();
+
+    private final static WorldGenCavesHell caveGenNether = new WorldGenCavesHell();
+	private final static WorldGenNether genNetherFort = new WorldGenNether();
+
+    static {
+        BlockFlowers.EnumFlowerVarient[] flowerVartients = BlockFlowers.EnumFlowerVarient.values();
+        worldGenFlowers = new WorldGenFlowers[flowerVartients.length];
+        for (int i=0;i<flowerVartients.length;i++) {
+            worldGenFlowers[i] = new WorldGenFlowers(flowerVartients[i].a().a(), flowerVartients[i]);
+        }
+    }
 	
 	private double[] q;
 	private double[] t = new double[256];
@@ -58,15 +73,12 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 	
 	int[][] i = new int[32][32];
 	
-	private int offset, liquid;
-	private boolean only, canyon, stronghold, mineshaft, village, largefeature, bedrock;
-	private boolean no_plains, no_desert, no_forest, no_jungle, no_taiga, no_ice, no_ocean;
-	private boolean no_mushroom = true;
-	private boolean no_swampland = true;
-	private Biome onlybiome, plains, desert, forest, jungle, taiga, ice, ocean;
-	private Biome mushroom = Biome.FOREST;
-	private Biome swampland = Biome.SWAMPLAND;
-	byte liquid_id;
+	private int offset;
+	private boolean only, canyon, stronghold, mineshaft, village, largeFeature, glowstone;
+	private boolean no_plains, no_desert, no_forest, no_jungle, no_taiga, no_ice, no_mushroom, no_swampland;
+    private boolean no_ocean = true;
+	private Biome onlyBiome, plains, desert, forest, jungle, taiga, ice, mushroom, swampland;
+    private Biome ocean = Biome.PLAINS;
 	
 	@SuppressWarnings("deprecation")
 	public ChunkGenerator(String id){
@@ -76,8 +88,10 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 		for (int i = 0; i < tokens.length; i++){
 			if (tokens[i].matches("offset=-?\\d{1,3}")){
 				offset = Integer.parseInt(tokens[i].substring(7));
-			}else if (tokens[i].equals("canyon")){
-				canyon = true;
+            }else if (tokens[i].equals("glowstone")){
+                glowstone = true;
+            }else if (tokens[i].equals("canyon")){
+                canyon = true;
 			}else if (tokens[i].equals("stronghold")){
 				stronghold = true;
 			}else if (tokens[i].equals("mineshaft")){
@@ -85,9 +99,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 			}else if (tokens[i].equals("village")){
 				village = true;
 			}else if (tokens[i].equals("largefeatures")){
-				largefeature = true;
-			}else if (tokens[i].equals("bedrock")){
-				bedrock = true;
+				largeFeature = true;
 			}else if (tokens[i].equals("no-desert")){
 				no_desert = true;
 				desert = Biome.PLAINS;
@@ -112,7 +124,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				no_swampland = false;
 			}else if (tokens[i].matches("only=[A-Z_]+")){
 				only = true;
-				onlybiome = Biome.valueOf(tokens[i].substring(5));
+				onlyBiome = Biome.valueOf(tokens[i].substring(5));
 			}else if (tokens[i].matches("plains=[A-Z_]+")){
 				no_plains = true;
 				plains = Biome.valueOf(tokens[i].substring(7));
@@ -140,15 +152,17 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 			}else if (tokens[i].matches("ocean=[A-Z_]+")){
 				no_ocean = true;
 				ocean = Biome.valueOf(tokens[i].substring(5));
-			}else if (tokens[i].matches("water=\\d{1,3}")){
-				liquid = Integer.parseInt(tokens[i].substring(6)) + 1;
-				liquid_id = (byte) Material.WATER.getId();
-			}else if (tokens[i].matches("lava=\\d{1,3}")){
-				liquid = Integer.parseInt(tokens[i].substring(5)) + 1;
-				liquid_id = (byte) Material.LAVA.getId();
 			}
 		}
 	}
+
+
+    public ChunkGenerator(int offset, boolean glowstone) {
+        largeFeature = true;
+        canyon = true;
+        village = true;
+        this.glowstone = glowstone;
+    }
 	
 	public List<BlockPopulator> getDefaultPopulators(World world){
 		ArrayList<BlockPopulator> populators = new ArrayList<BlockPopulator>();
@@ -157,16 +171,14 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 			case NORMAL:
 				populators.add(new BiomePopulator());
 				populators.add(new LakePopulator(world));
-			    populators.add(new GrassPopulator(world));
-			    populators.add(new FlowerPopulator(world));
 			    populators.add(new PumpkinPopulator(world));
 			    populators.add(new MelonPopulator(world));
 			    populators.add(new OrePopulator(world));
-			    populators.add(new TreePopulator(world));
-			    populators.add(new SnowPopulator());
-			    populators.add(new MushroomPopulator(world));
 			    populators.add(new CactusPopulator(world));
 			    populators.add(new RedSandPopulator());
+                if (glowstone) {
+                    populators.add(new SkyGlowstonePopulator());
+                }
 			break;
 			
 			case THE_END:
@@ -285,7 +297,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 		byte b0 = 2;
 		int k = b0 + 1;
 		
-		int l = 128 / 4 + 1;
+		int l = 128 / 4 + 1; //128->256
 		int i1 = b0 + 1;
 		
 		this.q = this.a(this.q, chunkX * b0, 0, chunkZ * b0, k, l, i1);
@@ -313,7 +325,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				int l1 = 0;
 				
 				while (true){
-					if (l1 >= 128 / 4){
+					if (l1 >= 128 / 4){//128->256
 						++k1;
 						break;
 					}
@@ -336,9 +348,11 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 						double d13 = (d4 - d2) * d9;
 						
 						for (int j2 = 0; j2 < 8; ++j2){
-							int i3 = j2 + j1 * 8 << 11 | 0 + k1 * 8 << 7 | l1 * 4 + i2;
-							
-							int j3 = 1 << 7;
+//                            int i3 = j2 + j1 * 8 << 11 | 0 + k1 * 8 << 7 | l1 * 4 + i2;
+                            int i3 = j2 + j1 * 8 << 12 | k1 * 8 << 8 | l1 * 4 + i2;
+
+
+                            int j3 = 1 << 8; //7->8
 							double d14 = 0.125D;
 							double d15 = d10;
 							double d16 = (d11 - d10) * d14;
@@ -382,8 +396,8 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				Block b1, b2;
 				
 				if (only){
-					biomes.setBiome(x, z, onlybiome);
-					biome = onlybiome;
+					biomes.setBiome(x, z, onlyBiome);
+					biome = onlyBiome;
 				}else{
 					if (no_plains){
 						if (biome == Biome.PLAINS){
@@ -441,10 +455,10 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 					}
 				}
 				
-				if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS){
+				if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS || biome == Biome.DESERT_MOUNTAINS) {
 					b1 = Blocks.SAND;
 					b2 = Blocks.SAND;
-				}else if (biome == Biome.MESA || biome == Biome.MESA_BRYCE){
+				}else if (biome == Biome.MESA || biome == Biome.MESA_BRYCE || biome == Biome.MESA_PLATEAU || biome == Biome.MESA_PLATEAU_FOREST || biome == Biome.MESA_PLATEAU_FOREST_MOUNTAINS || biome == Biome.MESA_PLATEAU_MOUNTAINS){
 					b1 = Blocks.SAND;
 					b2 = Blocks.HARDENED_CLAY;
 				}else if (biome == Biome.HELL){
@@ -458,21 +472,19 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 					b2 = Blocks.DIRT;
 				}
 				
-				for (int y = 127; y >= 0; --y){
-					int l1 = x * 16 + z;
-					int i2 = l1 * 128 + y;
+				for (int y = 255; y >= 0; --y){ //127->255
 					
-					Block b3 = chunkSnapshot.a(i2).getBlock();
+					Block b3 = chunkSnapshot.a(x,y,z).getBlock();
 					
 					if (b3 == Blocks.AIR){
 						j1 = -1;
 					}else if (b3 == Blocks.STONE){
 						if (j1 == -1){
 							j1 = i1;
-                            chunkSnapshot.a(i2, b1.getBlockData());
+                            chunkSnapshot.a(x,y,z, b1.getBlockData());
 						}else if (j1 > 0){
 							--j1;
-                            chunkSnapshot.a(i2, b2.getBlockData());
+                            chunkSnapshot.a(x,y,z, b2.getBlockData());
 							
 							if (j1 == 0 && b2 == Blocks.SAND){
 								j1 = this.random.nextInt(4);
@@ -484,106 +496,93 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 			}
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
-	public byte[][] generateBlockSections(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes)
-	{
+	public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+
+		ChunkData chunkData = createChunkData(world);
 		Environment environment = world.getEnvironment();
-		
+
 		if (this.random == null){
 			this.random = new Random(world.getSeed());
-			
+
 			this.k = new NoiseGeneratorOctaves(this.random, 16);
 			this.l = new NoiseGeneratorOctaves(this.random, 16);
 			this.m = new NoiseGeneratorOctaves(this.random, 8);
 			this.o = new NoiseGeneratorOctaves(this.random, 4);
 			this.a = new NoiseGeneratorOctaves(this.random, 10);
 			this.b = new NoiseGeneratorOctaves(this.random, 16);
-			
-			if (environment == Environment.NORMAL){
-				this.caveGen = new WorldGenCaves();
-				this.canyonGen = new WorldGenCanyon();
-				this.strongholdGen = new WorldGenStronghold();
-				this.mineshaftGen = new WorldGenMineshaft();
-				this.villageGen = new WorldGenVillage();
-				this.largefeatureGen = new WorldGenLargeFeature();
-				
-			}else if (environment == Environment.NETHER){
-				this.caveGenNether = new WorldGenCavesHell();
-				this.genNetherFort = new WorldGenNether();
-			}
 		}
-		
+
 		net.minecraft.server.v1_8_R3.World mcWorld = ((CraftWorld) world).getHandle();
-		
+
 		//Block[] blocks = new Block[65536];
-        ChunkSnapshot chunkSnapshot = new ChunkSnapshot();
-		
+		ChunkSnapshot chunkSnapshot = new ChunkSnapshot();
+
 		this.random.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
-		
+
 		this.shapeLand(world, chunkX, chunkZ, chunkSnapshot);
 
-        IChunkProvider chunkProvider;
-        try {
-            chunkProvider = ReflectionUtils.getFieldValue(net.minecraft.server.v1_8_R3.World.class, "chunkProvider", IChunkProvider.class, mcWorld);
-        } catch (NoSuchFieldException e) {
-            throw new IllegalStateException(e);
-        }
+		IChunkProvider chunkProvider;
+		try {
+			chunkProvider = ReflectionUtils.getFieldValue(net.minecraft.server.v1_8_R3.World.class, "chunkProvider", IChunkProvider.class, mcWorld);
+		} catch (NoSuchFieldException e) {
+			throw new IllegalStateException(e);
+		}
 
-        if (environment == Environment.NORMAL){
-			this.caveGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			
+		if (environment == Environment.NORMAL){
+			caveGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+
 			if (canyon){
-				this.canyonGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+				canyonGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
 			}
 			if (stronghold){
-				this.strongholdGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+				strongholdGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
 			}
 			if (mineshaft){
-				this.mineshaftGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+				mineshaftGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
 			}
 			if (village){
-				this.villageGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+				villageGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
 			}
-			if (largefeature){
-				this.largefeatureGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			}
+            if (largeFeature){
+                largeFeatureGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
+//            if (glowstone){
+//
+//
+//                BlockPosition var4 = new BlockPosition(chunkX * 16, 0, chunkX * 16);
+//                for(int i = 0; i < 10; ++i) {
+//                    worldGenSkyGlowstone.generate(mcWorld, this.random, var4.a(this.random.nextInt(16) + 8, this.random.nextInt(128), this.random.nextInt(16) + 8));
+//                }
+//            }
 		}else if (environment == Environment.NETHER){
-			this.caveGenNether.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			this.genNetherFort.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+			caveGenNether.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+			genNetherFort.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
 		}
-		
+
 		this.decorateLand(chunkX, chunkZ, chunkSnapshot, biomes);
-		
+
 		int cut_top = 0;
 		int cut_bottom = 0;
-		
+
 		if (offset > 128){
 			cut_top = offset - 128;
 		}else if (offset < 0){
 			cut_bottom = -offset;
 		}
-		
-		byte[][] chunk = new byte[16][4096];
-		
+
+
 		// TODO: Do this in a nice way.
 		for (int x = 0; x < 16; ++x){
-			for (int y = cut_bottom; y < 128 - cut_top; ++y){
+			for (int y = cut_bottom; y < 256 - cut_top; ++y){
 				for (int z = 0; z < 16; ++z){
-					chunk[y + offset >> 4][((y + offset & 0xF) << 8) | (z << 4) | x] = ((Integer) Block.REGISTRY.b(chunkSnapshot.a(x,y,z).getBlock())).byteValue();
-					
-					if (bedrock && y == 0){
-						chunk[y - cut_bottom >> 4][((y - cut_bottom & 0xF) << 8) | (z << 4) | x] = (byte) Material.BEDROCK.getId();
-					}
-					
-					if (liquid > 0 && y <= liquid - 1 + cut_bottom && chunk[y - cut_bottom >> 4][((y - cut_bottom & 0xF) << 8) | (z << 4) | x] == 0){
-						chunk[y - cut_bottom >> 4][((y - cut_bottom & 0xF) << 8) | (z << 4) | x] = liquid_id;
-					}
+                    chunkData.setBlock(x,y+offset,z, CraftMagicNumbers.getMaterial(chunkSnapshot.a(x,y,z).getBlock()));
 				}
 			}
 		}
-		
-		return chunk;
+
+		return chunkData;
 	}
+
 }

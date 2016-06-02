@@ -1,9 +1,5 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,6 +7,10 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class GrassPopulator
   extends BlockPopulator
@@ -25,7 +25,7 @@ public class GrassPopulator
   @SuppressWarnings("deprecation")
 public void populate(World world, Random random, Chunk chunk)
   {
-    List<Biome> iceBiomes = Arrays.asList(new Biome[] { Biome.TAIGA, Biome.TAIGA_HILLS, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.FROZEN_RIVER, Biome.FROZEN_OCEAN });
+    List<Biome> iceBiomes = Arrays.asList(Biome.TAIGA, Biome.TAIGA_HILLS, Biome.ICE_PLAINS, Biome.ICE_MOUNTAINS, Biome.FROZEN_RIVER, Biome.FROZEN_OCEAN);
     
     int worldChunkX = chunk.getX() * 16;
     int worldChunkZ = chunk.getZ() * 16;
@@ -39,19 +39,13 @@ public void populate(World world, Random random, Chunk chunk)
           Block ground = block.getRelative(BlockFace.DOWN);
           
           Biome biome = world.getBiome(worldChunkX + x, worldChunkZ + z);
-          if ((ground.getType() == Material.GRASS) || (ground.getType() == Material.SAND)) {
-            if (biome == Biome.PLAINS)
+          if ((ground.getType() == Material.GRASS)) {
+            if (biome == Biome.PLAINS || biome == Biome.SUNFLOWER_PLAINS || biome == Biome.SAVANNA || biome == Biome.SAVANNA_MOUNTAINS || biome == Biome.SAVANNA_PLATEAU || biome == Biome.SAVANNA_PLATEAU_MOUNTAINS)
             {
               if (this.random.nextInt(100) < 35)
               {
                 block.setType(Material.LONG_GRASS);
                 block.setData((byte)1);
-              }
-            }
-            else if (biome == Biome.DESERT)
-            {
-              if (this.random.nextInt(100) < 3) {
-                block.setType(Material.DEAD_BUSH);
               }
             }
             else if ((biome == Biome.TAIGA) || (biome == Biome.TAIGA_HILLS))
@@ -75,6 +69,13 @@ public void populate(World world, Random random, Chunk chunk)
               block.setType(Material.LONG_GRASS);
               block.setData((byte)1);
               block.setData((byte)(this.random.nextInt(100) < 85 ? 1 : 2));
+            }
+          } else if (ground.getType() == Material.SAND) {
+            if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS || biome == Biome.DESERT_MOUNTAINS || biome == Biome.MESA || biome == Biome.MESA_BRYCE || biome == Biome.MESA_PLATEAU || biome == Biome.MESA_PLATEAU_FOREST || biome == Biome.MESA_PLATEAU_FOREST_MOUNTAINS || biome == Biome.MESA_PLATEAU_MOUNTAINS)
+            {
+              if (this.random.nextInt(100) < 3) {
+                block.setType(Material.DEAD_BUSH);
+              }
             }
           }
         }

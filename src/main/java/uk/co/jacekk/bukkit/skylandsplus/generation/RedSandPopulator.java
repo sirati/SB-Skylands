@@ -1,15 +1,15 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class RedSandPopulator extends BlockPopulator
 {
@@ -18,7 +18,7 @@ public class RedSandPopulator extends BlockPopulator
 	  @SuppressWarnings("deprecation")
 	  public void populate(World world, Random random, Chunk chunk)
 	  {
-		  List<Biome> mesaBiomes = Arrays.asList(new Biome[] { Biome.MESA, Biome.MESA_BRYCE, Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_MOUNTAINS });
+		  List<Biome> mesaBiomes = Arrays.asList(Biome.MESA, Biome.MESA_BRYCE, Biome.MESA_PLATEAU, Biome.MESA_PLATEAU_MOUNTAINS);
 		  for (int x = 0; x < 16; x++)
 		  {
 			  for (int z = 0; z < 16; z++)

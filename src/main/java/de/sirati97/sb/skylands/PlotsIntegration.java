@@ -14,16 +14,15 @@ import uk.co.jacekk.bukkit.skylandsplus.generation.ChunkGenerator;
  */
 public class PlotsIntegration {
 
-    public void registerWorld(Plugin plugin, Plugin plotPluginUncasted, String name, long seed, String settings) {
-        if(settings == null || settings.isEmpty()){
-            settings = "offset=0";
-        }
+    public void registerWorld(Plugin plugin, Plugin plotPluginUncasted, String name, long seed) {
+        PlotPlugin plotPlugin = (PlotPlugin)plotPluginUncasted;
         WorldCreator worldCreator = new WorldCreator(name);
         worldCreator.seed(seed);
-        worldCreator.generator(new ChunkGenerator(settings));
+        worldCreator.generator(new ChunkGenerator(20, true));
 
         World skylands = Bukkit.createWorld(worldCreator);
-        PlotPlugin plotPlugin = (PlotPlugin)plotPluginUncasted;
+        skylands.setKeepSpawnInMemory(false);
+
         plotPlugin.getPortalManager().registerPortal(new PortalWorld("FarmSkylands", Material.GLOWSTONE, PortalWorld.GROUND_BLOCKS_OVERWORLD, skylands, false));
 
     }

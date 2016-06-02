@@ -19,7 +19,7 @@ public class MobSpawnListener implements Listener{
 				if (entity.getClass().equals(event.getEntity().getClass())){
 					++total;
 					
-					if (total > 4){
+					if (total > 8){
 						event.setCancelled(true);
 						return;
 					}

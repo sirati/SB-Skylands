@@ -1,7 +1,7 @@
 name: SB-Skylands
 version: "19.1-1.8.8"
 main: de.sirati97.sb.skylands.SkylandsPlugin
-description: The SkylandsPlus Generator for 1.7.10
+description: The SB-Skylands Generator for 1.8.8
 author: Jenkins
 authors: ['Other Autors of SkylandsPlus','sirati97']
 load: startup
