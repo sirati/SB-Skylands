@@ -1,7 +1,9 @@
-name: SkylandsPlus
-version: "19.1-1.7.10"
-main: uk.co.jacekk.bukkit.skylandsplus.SkylandsPlus
+name: SB-Skylands
+version: "19.1-1.8.8"
+main: de.sirati97.sb.skylands.SkylandsPlugin
 description: The SkylandsPlus Generator for 1.7.10
 author: Jenkins
-website: "http://dev.bukkit.org/bukkit-plugins/skylandsplus/"
+authors: ['Other Autors of SkylandsPlus','sirati97']
 load: startup
+softdepend: ['SB-Base']
+loadbefore: ['SB-Plots']
