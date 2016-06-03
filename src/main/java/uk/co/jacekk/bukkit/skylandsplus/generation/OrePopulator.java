@@ -1,20 +1,22 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Random;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.generator.BlockPopulator;
 
+import java.util.Random;
+
 public class OrePopulator extends BlockPopulator
 {
   private Random random;
+	private boolean glowstone;
   
-  public OrePopulator(World world)
+  public OrePopulator(World world, boolean glowstone)
   {
-    this.random = new Random(world.getSeed());
+	  this.glowstone = glowstone;
+	  this.random = new Random(world.getSeed());
   }
   
   @SuppressWarnings("deprecation")
@@ -133,6 +135,17 @@ public class OrePopulator extends BlockPopulator
 		      
 		      createClump(world, Material.LAPIS_ORE, 6, x, y, z);
 		    }
+		  if (glowstone) {
+			  for (int i = 0; i < 4; i++)
+			  {
+				  int x = worldChunkX + this.random.nextInt(16);
+				  int z = worldChunkZ + this.random.nextInt(16);
+				  int y = this.random.nextInt(128);
+
+				  createClump(world, Material.GLOWSTONE, 8, x, y, z);
+			  }
+		  }
+
 	  }
 	  else if (world.getEnvironment() == Environment.NETHER)
 	  {

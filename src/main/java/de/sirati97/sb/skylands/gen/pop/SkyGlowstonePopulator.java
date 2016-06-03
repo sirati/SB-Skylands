@@ -9,7 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
-import uk.co.jacekk.bukkit.skylandsplus.generation.ChunkGenerator;
+import uk.co.jacekk.bukkit.skylandsplus.generation.SkylandsGenerator;
 
 import java.util.Random;
 
@@ -39,7 +39,7 @@ public class SkyGlowstonePopulator extends BlockPopulator {
                 }
             }
             if (yCave == 0) {
-                ChunkGenerator.worldGenSkyGlowstone.generate(nmsWorld, random, new BlockPosition(block.getX(), block.getY()-1, block.getZ()));
+                SkylandsGenerator.worldGenSkyGlowstone.generate(nmsWorld, random, new BlockPosition(block.getX(), block.getY()-1, block.getZ()));
             }
         }
         net.minecraft.server.v1_8_R3.Chunk c = ((CraftChunk) chunk).getHandle();

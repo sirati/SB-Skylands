@@ -2,12 +2,11 @@ package de.sirati97.sb.skylands;
 
 import de.sirati97.sb.plots.PlotPlugin;
 import de.sirati97.sb.plots.portals.PortalWorld;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
-import uk.co.jacekk.bukkit.skylandsplus.generation.ChunkGenerator;
+import uk.co.jacekk.bukkit.skylandsplus.generation.SkylandsGenerator;
 
 /**
  * Created by sirati97 on 31.05.2016.
@@ -16,14 +15,11 @@ public class PlotsIntegration {
 
     public void registerWorld(Plugin plugin, Plugin plotPluginUncasted, String name, long seed) {
         PlotPlugin plotPlugin = (PlotPlugin)plotPluginUncasted;
-        WorldCreator worldCreator = new WorldCreator(name);
-        worldCreator.seed(seed);
-        worldCreator.generator(new ChunkGenerator(20, true));
 
-        World skylands = Bukkit.createWorld(worldCreator);
-        skylands.setKeepSpawnInMemory(false);
+        ChunkGenerator generator = new SkylandsGenerator(20, 145, true); //standart value. otherwise: settings="offset=20,high=145"
 
-        plotPlugin.getPortalManager().registerPortal(new PortalWorld("FarmSkylands", Material.GLOWSTONE, PortalWorld.GROUND_BLOCKS_OVERWORLD, skylands, false));
+        plotPlugin.getWorldManager().loadWorld(name, "FarmSkylands", Material.GLOWSTONE, PortalWorld.GROUND_BLOCKS_OVERWORLD, seed, generator, plugin.getName(), World.Environment.NORMAL);
+
 
     }
 }

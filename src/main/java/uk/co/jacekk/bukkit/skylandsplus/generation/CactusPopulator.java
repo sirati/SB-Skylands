@@ -1,6 +1,5 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,6 +7,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 public class CactusPopulator
   extends BlockPopulator
@@ -29,7 +30,7 @@ public class CactusPopulator
       int z = this.random.nextInt(16);
       
       Biome biome = world.getBiome(worldChunkX + x, worldChunkZ + z);
-      if ((biome == Biome.DESERT) || (biome == Biome.DESERT_HILLS))
+      if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS || biome == Biome.DESERT_MOUNTAINS || biome == Biome.MESA || biome == Biome.MESA_BRYCE || biome == Biome.MESA_PLATEAU || biome == Biome.MESA_PLATEAU_FOREST || biome == Biome.MESA_PLATEAU_FOREST_MOUNTAINS || biome == Biome.MESA_PLATEAU_MOUNTAINS)
       {
         int h = 1 + this.random.nextInt(3);
         for (int y = 128; y > 0; y--)

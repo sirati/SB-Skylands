@@ -1,7 +1,5 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Random;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,6 +7,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 public class SnowPopulator extends BlockPopulator {
 	
@@ -21,7 +21,6 @@ public class SnowPopulator extends BlockPopulator {
 				Biome biome = world.getBiome(chunkX + x, chunkZ + z);
 
 				if (biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS ||
-						biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS ||
 						biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_PLAINS_SPIKES){
 					int y = world.getHighestBlockYAt(chunkX + x, chunkZ + z);
 

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.co.jacekk.bukkit.skylandsplus.generation.SkylandsGenerator;
 import uk.co.jacekk.bukkit.skylandsplus.listeners.MobSpawnListener;
 import uk.co.jacekk.bukkit.skylandsplus.listeners.PhysicsListener;
 
@@ -28,8 +29,9 @@ public class SkylandsPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        configFile = new File(getDataFolder(), File.pathSeparator + "config.yml");
+        configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
+            config = new YamlConfiguration();
             config.set("prevent-sand-falling", true);
             config.set("restrict-mob-spawning", true);
             try {
@@ -55,9 +57,9 @@ public class SkylandsPlugin extends JavaPlugin implements Listener {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         if(id == null || id.isEmpty()){
-            return new uk.co.jacekk.bukkit.skylandsplus.generation.ChunkGenerator(20, true);
+            return new SkylandsGenerator(20, 145, true);
         } else {
-            return new uk.co.jacekk.bukkit.skylandsplus.generation.ChunkGenerator(id);
+            return new SkylandsGenerator(id);
         }
 
     }

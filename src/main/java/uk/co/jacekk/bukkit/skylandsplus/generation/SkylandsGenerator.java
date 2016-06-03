@@ -1,6 +1,7 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
 import de.sirati97.sb.skylands.gen.pop.SkyGlowstonePopulator;
+import de.sirati97.sb.skylands.gen.pop.nms.WorldGenSecondaryCaves;
 import de.sirati97.sb.skylands.gen.pop.nms.WorldGenSkyGlowstone;
 import net.minecraft.server.v1_8_R3.Block;
 import net.minecraft.server.v1_8_R3.BlockFlowers;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
+public class SkylandsGenerator extends org.bukkit.generator.ChunkGenerator {
 	
 	private Random random;
 	
@@ -41,6 +42,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 	private NoiseGeneratorOctaves b;
 
     private final static WorldGenCaves caveGen = new WorldGenCaves();
+    private final static WorldGenSecondaryCaves caveGen2 = new WorldGenSecondaryCaves();
     private final static WorldGenCavesHell caveHellGen = new WorldGenCavesHell();
 	
 	private final static WorldGenCanyon canyonGen = new WorldGenCanyon();
@@ -74,53 +76,73 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 	int[][] i = new int[32][32];
 	
 	private int offset;
-	private boolean only, canyon, stronghold, mineshaft, village, largeFeature, glowstone;
+    private int high = 128;
+    private boolean only, stronghold, mineshaft;
+    private boolean canyon = true;
+    private boolean village = true;
+    private boolean largeFeature = true;
+    private boolean glowstone = true;
+    private boolean decorated_caves = true;
+    private boolean caves = true;
 	private boolean no_plains, no_desert, no_forest, no_jungle, no_taiga, no_ice, no_mushroom, no_swampland;
     private boolean no_ocean = true;
 	private Biome onlyBiome, plains, desert, forest, jungle, taiga, ice, mushroom, swampland;
     private Biome ocean = Biome.PLAINS;
 	
 	@SuppressWarnings("deprecation")
-	public ChunkGenerator(String id){
-		
+	public SkylandsGenerator(String id){
+		if (canyon) {
+            System.out.println(3);
+        }
+
 		String tokens[] = id.split("[,]");
 		
 		for (int i = 0; i < tokens.length; i++){
 			if (tokens[i].matches("offset=-?\\d{1,3}")){
 				offset = Integer.parseInt(tokens[i].substring(7));
-            }else if (tokens[i].equals("glowstone")){
-                glowstone = true;
-            }else if (tokens[i].equals("canyon")){
-                canyon = true;
-			}else if (tokens[i].equals("stronghold")){
+            }else if (tokens[i].matches("high=\\d{1,3}")){
+                high = Integer.parseInt(tokens[i].substring(5));
+            }else if (tokens[i].equalsIgnoreCase("high")){
+                high = 145;
+            }else if (tokens[i].equalsIgnoreCase("very-high")){
+                high = 170;
+            }else if (tokens[i].equalsIgnoreCase("no-decorated-caves")){
+                decorated_caves = false;
+            }else if (tokens[i].equalsIgnoreCase("no-caves")){
+                caves = false;
+            }else if (tokens[i].equalsIgnoreCase("no-glowstone")){
+                glowstone = false;
+            }else if (tokens[i].equalsIgnoreCase("no-canyon")){
+                canyon = false;
+			}else if (tokens[i].equalsIgnoreCase("stronghold")){
 				stronghold = true;
-			}else if (tokens[i].equals("mineshaft")){
+			}else if (tokens[i].equalsIgnoreCase("mineshaft")){
 				mineshaft = true;
-			}else if (tokens[i].equals("village")){
-				village = true;
-			}else if (tokens[i].equals("largefeatures")){
-				largeFeature = true;
-			}else if (tokens[i].equals("no-desert")){
+			}else if (tokens[i].equalsIgnoreCase("no-village")){
+				village = false;
+			}else if (tokens[i].equalsIgnoreCase("no-largeFeatures")){
+				largeFeature = false;
+			}else if (tokens[i].equalsIgnoreCase("no-desert")){
 				no_desert = true;
 				desert = Biome.PLAINS;
-			}else if (tokens[i].equals("no-forest")){
+			}else if (tokens[i].equalsIgnoreCase("no-forest")){
 				no_forest = true;
 				forest = Biome.PLAINS;
-			}else if (tokens[i].equals("no-jungle")){
+			}else if (tokens[i].equalsIgnoreCase("no-jungle")){
 				no_jungle = true;
 				jungle = Biome.PLAINS;
-			}else if (tokens[i].equals("no-taiga")){
+			}else if (tokens[i].equalsIgnoreCase("no-taiga")){
 				no_taiga = true;
 				taiga = Biome.PLAINS;
-			}else if (tokens[i].equals("no-ice")){
+			}else if (tokens[i].equalsIgnoreCase("no-ice")){
 				no_ice = true;
 				ice = Biome.PLAINS;
-			}else if (tokens[i].equals("no-ocean")){
+			}else if (tokens[i].equalsIgnoreCase("no-ocean")){
 				no_ocean = true;
 				ocean = Biome.PLAINS;
-			}else if (tokens[i].equals("mushroom")){
+			}else if (tokens[i].equalsIgnoreCase("mushroom")){
 				no_mushroom = false;
-			}else if (tokens[i].equals("swampland")){
+			}else if (tokens[i].equalsIgnoreCase("swampland")){
 				no_swampland = false;
 			}else if (tokens[i].matches("only=[A-Z_]+")){
 				only = true;
@@ -157,10 +179,9 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 	}
 
 
-    public ChunkGenerator(int offset, boolean glowstone) {
-        largeFeature = true;
-        canyon = true;
-        village = true;
+    public SkylandsGenerator(int offset, int high, boolean glowstone) {
+        this.offset = offset;
+        this.high = high;
         this.glowstone = glowstone;
     }
 	
@@ -173,9 +194,10 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				populators.add(new LakePopulator(world));
 			    populators.add(new PumpkinPopulator(world));
 			    populators.add(new MelonPopulator(world));
-			    populators.add(new OrePopulator(world));
+			    populators.add(new OrePopulator(world, glowstone));
 			    populators.add(new CactusPopulator(world));
-			    populators.add(new RedSandPopulator());
+                populators.add(new RedSandPopulator());
+                populators.add(new SnowPopulator());
                 if (glowstone) {
                     populators.add(new SkyGlowstonePopulator());
                 }
@@ -190,7 +212,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				populators.add(new NetherFirePopulator(world));
 				populators.add(new NetherGlowstonePopulator(world));
 				populators.add(new NetherWartPopulator(world));
-			    populators.add(new OrePopulator(world));
+			    populators.add(new OrePopulator(world, false));
 			break;
 		}
 		
@@ -297,7 +319,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 		byte b0 = 2;
 		int k = b0 + 1;
 		
-		int l = 128 / 4 + 1; //128->256
+		int l = high / 4 + 1; //128->high
 		int i1 = b0 + 1;
 		
 		this.q = this.a(this.q, chunkX * b0, 0, chunkZ * b0, k, l, i1);
@@ -325,7 +347,7 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 				int l1 = 0;
 				
 				while (true){
-					if (l1 >= 128 / 4){//128->256
+					if (l1 >= high / 4){//128->high
 						++k1;
 						break;
 					}
@@ -530,38 +552,39 @@ public class ChunkGenerator extends org.bukkit.generator.ChunkGenerator {
 			throw new IllegalStateException(e);
 		}
 
-		if (environment == Environment.NORMAL){
-			caveGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+        if (environment == Environment.NORMAL){
+            if (decorated_caves) {
+                caveGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot); //one time before decoration
+            }
 
-			if (canyon){
-				canyonGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			}
-			if (stronghold){
-				strongholdGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			}
-			if (mineshaft){
-				mineshaftGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			}
-			if (village){
-				villageGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			}
+        }
+
+		this.decorateLand(chunkX, chunkZ, chunkSnapshot, biomes);
+
+        if (environment == Environment.NORMAL){
+            if (caves) {
+                caveGen2.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
+
+            if (canyon){
+                canyonGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
+            if (stronghold){
+                strongholdGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
+            if (mineshaft){
+                mineshaftGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
+            if (village){
+                villageGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            }
             if (largeFeature){
                 largeFeatureGen.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
             }
-//            if (glowstone){
-//
-//
-//                BlockPosition var4 = new BlockPosition(chunkX * 16, 0, chunkX * 16);
-//                for(int i = 0; i < 10; ++i) {
-//                    worldGenSkyGlowstone.generate(mcWorld, this.random, var4.a(this.random.nextInt(16) + 8, this.random.nextInt(128), this.random.nextInt(16) + 8));
-//                }
-//            }
-		}else if (environment == Environment.NETHER){
-			caveGenNether.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-			genNetherFort.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
-		}
-
-		this.decorateLand(chunkX, chunkZ, chunkSnapshot, biomes);
+        }else if (environment == Environment.NETHER){
+            caveGenNether.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+            genNetherFort.a(chunkProvider, mcWorld, chunkX, chunkZ, chunkSnapshot);
+        }
 
 		int cut_top = 0;
 		int cut_bottom = 0;
