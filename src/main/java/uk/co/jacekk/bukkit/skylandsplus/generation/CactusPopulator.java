@@ -1,5 +1,6 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
+import de.sirati97.sb.skylands.BiomesUtil;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,43 +12,37 @@ import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
 
 public class CactusPopulator
-  extends BlockPopulator
-{
-  private Random random;
-  
-  public CactusPopulator(World world)
-  {
-    this.random = new Random(world.getSeed());
-  }
-  
-  public void populate(World world, Random random, Chunk chunk)
-  {
-    int worldChunkX = chunk.getX() * 16;
-    int worldChunkZ = chunk.getZ() * 16;
-    for (int c = 0; c < 2; c++)
-    {
-      int x = this.random.nextInt(16);
-      int z = this.random.nextInt(16);
-      
-      Biome biome = world.getBiome(worldChunkX + x, worldChunkZ + z);
-      if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS || biome == Biome.DESERT_MOUNTAINS || biome == Biome.MESA || biome == Biome.MESA_BRYCE || biome == Biome.MESA_PLATEAU || biome == Biome.MESA_PLATEAU_FOREST || biome == Biome.MESA_PLATEAU_FOREST_MOUNTAINS || biome == Biome.MESA_PLATEAU_MOUNTAINS)
-      {
-        int h = 1 + this.random.nextInt(3);
-        for (int y = 128; y > 0; y--)
-        {
-          Block block = chunk.getBlock(x, y, z);
-          Block blockAbove = block.getRelative(BlockFace.UP);
-          if ((blockAbove.getType() == Material.AIR) && (block.getType() == Material.SAND)) {
-            for (int i = 0; i < h; i++)
-            {
-              block = chunk.getBlock(x, y + i, z);
-              if ((block.getRelative(BlockFace.NORTH).getType() == Material.AIR) && (block.getRelative(BlockFace.SOUTH).getType() == Material.AIR) && (block.getRelative(BlockFace.EAST).getType() == Material.AIR) && (block.getRelative(BlockFace.WEST).getType() == Material.AIR) && ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND) || (block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS))) {
-                block.setType(Material.CACTUS);
-              }
-            }
-          }
-        }
-      }
+        extends BlockPopulator {
+    private Random random;
+
+    public CactusPopulator(World world) {
+        this.random = new Random(world.getSeed());
     }
-  }
+
+    public void populate(World world, Random random, Chunk chunk) {
+        int worldChunkX = chunk.getX() * 16;
+        int worldChunkZ = chunk.getZ() * 16;
+        for (int c = 0; c < 2; c++) {
+            int x = this.random.nextInt(16);
+            int z = this.random.nextInt(16);
+
+            Biome biome = world.getBiome(worldChunkX + x, worldChunkZ + z);
+            if (BiomesUtil.isDesert(biome) || BiomesUtil.isMesa(biome)) {
+                int h = 1 + this.random.nextInt(3);
+                for (int y = 128; y > 0; y--) {
+                    Block block = chunk.getBlock(x, y, z);
+                    Block blockAbove = block.getRelative(BlockFace.UP);
+                    if ((blockAbove.getType() == Material.AIR) && (block.getType() == Material.SAND)) {
+                        for (int i = 0; i < h; i++) {
+                            block = chunk.getBlock(x, y + i, z);
+                            if ((block.getRelative(BlockFace.NORTH).getType() == Material.AIR) && (block.getRelative(BlockFace.SOUTH).getType() == Material.AIR) && (block.getRelative(BlockFace.EAST).getType() == Material.AIR) && (block.getRelative(BlockFace.WEST).getType() == Material.AIR) && ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND) || (block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS))) {
+                                block.setType(Material.CACTUS);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

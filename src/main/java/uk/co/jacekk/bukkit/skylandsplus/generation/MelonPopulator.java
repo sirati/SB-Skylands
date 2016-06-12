@@ -1,13 +1,14 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import java.util.Random;
-
+import de.sirati97.sb.skylands.BiomesUtil;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 public class MelonPopulator
   extends BlockPopulator
@@ -27,7 +28,7 @@ public void populate(World world, Random random, Chunk chunk)
     Biome b = world.getBiome(worldChunkX, worldChunkZ);
     
     
-    if (this.random.nextInt(100) == 0 && b == Biome.JUNGLE || b == Biome.JUNGLE_EDGE || b == Biome.JUNGLE_EDGE_MOUNTAINS || b == Biome.JUNGLE_HILLS || b == Biome.JUNGLE_MOUNTAINS)
+    if (this.random.nextInt(100) == 0 && BiomesUtil.isJungle(b))
     {
       int x = worldChunkX + this.random.nextInt(16) + 8;
       int z = worldChunkZ + this.random.nextInt(16) + 8;

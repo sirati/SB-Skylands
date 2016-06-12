@@ -1,11 +1,11 @@
 package de.sirati97.sb.skylands.gen.pop.nms;
 
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.Blocks;
-import net.minecraft.server.v1_8_R3.EnumDirection;
-import net.minecraft.server.v1_8_R3.Material;
-import net.minecraft.server.v1_8_R3.World;
-import net.minecraft.server.v1_8_R3.WorldGenerator;
+import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_10_R1.Blocks;
+import net.minecraft.server.v1_10_R1.EnumDirection;
+import net.minecraft.server.v1_10_R1.Material;
+import net.minecraft.server.v1_10_R1.World;
+import net.minecraft.server.v1_10_R1.WorldGenerator;
 
 import java.util.Random;
 
@@ -20,9 +20,9 @@ public class WorldGenSkyGlowstone extends WorldGenerator {
         } else {
             var1.setTypeAndData(var3, Blocks.GLOWSTONE.getBlockData(), 2);
 
-            for(int var4 = 0; var4 < 1500; ++var4) {
+            for(int var4 = 0; var4 < 1300; ++var4) {
                 BlockPosition var5 = var3.a(var2.nextInt(8) - var2.nextInt(8), -var2.nextInt(12), var2.nextInt(8) - var2.nextInt(8));
-                if(var1.getType(var5).getBlock().getMaterial() == Material.AIR) {
+                if(var1.getType(var5).getMaterial() == Material.AIR) {
                     int var6 = 0;
                     EnumDirection[] var7 = EnumDirection.values();
                     int var8 = var7.length;

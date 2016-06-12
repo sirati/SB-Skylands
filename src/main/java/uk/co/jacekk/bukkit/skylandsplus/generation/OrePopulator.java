@@ -127,7 +127,7 @@ public class OrePopulator extends BlockPopulator
 		      
 		      createClump(world, Material.DIAMOND_ORE, 7, x, y, z);
 		    }
-		    for (int i = 0; i < 2; i++)
+		    for (int i = 0; i < this.random.nextInt(3); i++)
 		    {
 		      int x = worldChunkX + this.random.nextInt(16);
 		      int z = worldChunkZ + this.random.nextInt(16);

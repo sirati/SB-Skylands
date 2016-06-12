@@ -4,7 +4,19 @@
 	<groupId>de.sirati97.sb</groupId>
 	<artifactId>SB-Skylands</artifactId>
 	<version>0.16-SNAPSHOT</version>
-	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
@@ -20,18 +32,12 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
-		</dependency>
-		<!--Bukkit API-->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<version>1.10-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>de.sirati97</groupId>
 			<artifactId>oilspigot</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<version>1.10-R0.1-SNAPSHOT</version>
 		</dependency>
         <dependency>
             <groupId>de.sirati97.sb</groupId>

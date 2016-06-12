@@ -1,5 +1,6 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
+import de.sirati97.sb.skylands.BiomesUtil;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,8 +21,7 @@ public class SnowPopulator extends BlockPopulator {
 			for (int z = 0; z < 16; ++z){
 				Biome biome = world.getBiome(chunkX + x, chunkZ + z);
 
-				if (biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS ||
-						biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_PLAINS_SPIKES){
+				if (BiomesUtil.isIcy(biome)){
 					int y = world.getHighestBlockYAt(chunkX + x, chunkZ + z);
 
 					if (y > 5){

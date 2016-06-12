@@ -57,7 +57,7 @@ public class SkylandsPlugin extends JavaPlugin implements Listener {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         if(id == null || id.isEmpty()){
-            return new SkylandsGenerator(20, 145, true);
+            return new SkylandsGenerator(20, 128, true);
         } else {
             return new SkylandsGenerator(id);
         }

@@ -1,12 +1,12 @@
 package uk.co.jacekk.bukkit.skylandsplus.generation;
 
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.Blocks;
-import net.minecraft.server.v1_8_R3.WorldGenLakes;
-import net.minecraft.server.v1_8_R3.WorldGenReed;
+import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_10_R1.Blocks;
+import net.minecraft.server.v1_10_R1.WorldGenLakes;
+import net.minecraft.server.v1_10_R1.WorldGenReed;
 import org.bukkit.Chunk;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class LakePopulator
   
   public void populate(org.bukkit.World world, Random random, Chunk chunk)
   {
-    net.minecraft.server.v1_8_R3.World mcWorld = ((CraftWorld)world).getHandle();
+    net.minecraft.server.v1_10_R1.World mcWorld = ((CraftWorld)world).getHandle();
     
     int worldChunkX = chunk.getX() * 16;
     int worldChunkZ = chunk.getZ() * 16;

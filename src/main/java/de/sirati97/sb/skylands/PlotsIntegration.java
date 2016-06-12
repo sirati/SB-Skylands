@@ -16,9 +16,9 @@ public class PlotsIntegration {
     public void registerWorld(Plugin plugin, Plugin plotPluginUncasted, String name, long seed) {
         PlotPlugin plotPlugin = (PlotPlugin)plotPluginUncasted;
 
-        ChunkGenerator generator = new SkylandsGenerator(20, 145, true); //standart value. otherwise: settings="offset=20,high=145"
+        ChunkGenerator generator = new SkylandsGenerator(20, 145, true);
 
-        plotPlugin.getWorldManager().loadWorld(name, "FarmSkylands", Material.GLOWSTONE, PortalWorld.GROUND_BLOCKS_OVERWORLD, seed, generator, plugin.getName(), World.Environment.NORMAL);
+        plotPlugin.getWorldManager().loadWorld(name, "FarmSkylands", Material.GLOWSTONE, PortalWorld.GROUND_BLOCKS_OVERWORLD, seed, generator, plugin.getName(), "offset=20,high=145", World.Environment.NORMAL);
 
 
     }
