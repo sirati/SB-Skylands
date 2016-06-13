@@ -22,7 +22,7 @@ public class CactusPopulator
     public void populate(World world, Random random, Chunk chunk) {
         int worldChunkX = chunk.getX() * 16;
         int worldChunkZ = chunk.getZ() * 16;
-        for (int c = 0; c < 2; c++) {
+        for (int c = 0; c < 4; c++) {
             int x = this.random.nextInt(16);
             int z = this.random.nextInt(16);
 

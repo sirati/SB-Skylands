@@ -52,6 +52,10 @@ public final class BiomesUtil {
         return Biome.SAVANNA.equals(biome) || Biome.SAVANNA_ROCK.equals(biome) || Biome.MUTATED_SAVANNA.equals(biome) || Biome.MUTATED_SAVANNA_ROCK.equals(biome);
     }
 
+    public static boolean isExtremeHills(Biome biome) {
+        return Biome.EXTREME_HILLS.equals(biome) || Biome.EXTREME_HILLS_WITH_TREES.equals(biome) || Biome.MUTATED_EXTREME_HILLS.equals(biome) || Biome.SMALLER_EXTREME_HILLS.equals(biome) || Biome.MUTATED_EXTREME_HILLS_WITH_TREES.equals(biome);
+    }
+
     public static boolean isHell(Biome biome) {
         return Biome.HELL.equals(biome);
     }

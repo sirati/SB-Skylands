@@ -21,10 +21,11 @@ public class SnowPopulator extends BlockPopulator {
 			for (int z = 0; z < 16; ++z){
 				Biome biome = world.getBiome(chunkX + x, chunkZ + z);
 
-				if (BiomesUtil.isIcy(biome)){
+                boolean extremeHills = BiomesUtil.isExtremeHills(biome);
+				if (extremeHills || BiomesUtil.isIcy(biome)){
 					int y = world.getHighestBlockYAt(chunkX + x, chunkZ + z);
 
-					if (y > 5){
+					if (y > (extremeHills?95:5)){
 						Block block = chunk.getBlock(x, y, z);
 
 						Block down = block.getRelative(BlockFace.DOWN);

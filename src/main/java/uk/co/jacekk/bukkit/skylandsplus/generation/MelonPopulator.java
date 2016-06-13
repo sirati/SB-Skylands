@@ -28,7 +28,7 @@ public void populate(World world, Random random, Chunk chunk)
     Biome b = world.getBiome(worldChunkX, worldChunkZ);
     
     
-    if (this.random.nextInt(100) == 0 && BiomesUtil.isJungle(b))
+    if (this.random.nextInt(150) == 0 && BiomesUtil.isJungle(b))
     {
       int x = worldChunkX + this.random.nextInt(16) + 8;
       int z = worldChunkZ + this.random.nextInt(16) + 8;
