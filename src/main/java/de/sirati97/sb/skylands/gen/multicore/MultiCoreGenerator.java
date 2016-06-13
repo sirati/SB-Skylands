@@ -30,7 +30,7 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * Created by sirati97 on 12.06.2016.
+ * Created by sirati97 on 12.06.2016 for sb-skylands.
  */
 public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
     private final IAsyncGenerator parent;
@@ -132,7 +132,7 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
                     if (length < 4 && length > 1) {
                         double normX = relX / length;
                         double normZ = relZ / length;
-                        System.out.println("found relation ship normX="+normX+", normZ="+normZ+", length="+length);
+//                        System.out.println("found relation ship normX="+normX+", normZ="+normZ+", length="+length);
                         for (int i = 1; i < 4; i++) {
                             int xBase = (int)(normX*i);
                             int zBase = (int)(normZ*i);
@@ -145,14 +145,14 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
                     }
                     cords.remove(new Cord2d(0,0));
 
-                    synchronized (this.dataMap) {
-                        System.out.println("Generated new chunk at x=" + chunkX + ", z=" +chunkZ + ", data=" + (data==null) + ", addedChunks="+cords.size());
-                    }
+//                    synchronized (this.dataMap) {
+//                        System.out.println("Generated new chunk at x=" + chunkX + ", z=" +chunkZ + ", data=" + (data==null) + ", addedChunks="+cords.size());
+//                    }
                     for (Cord2d cord:cords) {
                         if (Math.abs(cord.x) > 5 || Math.abs(cord.z) > 5) {
                             System.out.println(cord);
                         }
-                        generateChunkDataIfNeeded(world, random, chunkX + cord.x, chunkZ + cord.z, biomeGrid);
+                        generateChunkDataIfNeeded(world, random, chunkX + cord.x, chunkZ + cord.z);
                     }
 
                     lastChunkX = chunkX;
@@ -173,9 +173,7 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
                     synchronized (data) {
                         if (!data.finished) {
                             try {
-                                long start = System.nanoTime();
                                 data.wait(1000);
-                                System.out.println("waited " + ((System.nanoTime()-start))/1000000);
                             } catch (InterruptedException ignored) {
                             }
                         }
@@ -199,7 +197,7 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
     }
 
 
-    private synchronized void generateChunkDataIfNeeded(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomeGrid) {
+    private synchronized void generateChunkDataIfNeeded(World world, Random random, int chunkX, int chunkZ) {
         if (!isChunkGenerated(world, chunkX, chunkZ)) {
             long id = Cord2d.getId(chunkX, chunkZ);
             MultiCoreChunkData data;
@@ -255,8 +253,6 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
         }
     }
 
-    Set<Long> f = new HashSet<>();
-    Set<MultiCoreChunkData> g = new HashSet<>();
     void generateAsync() {
         while (true) {
             final MultiCoreChunkData next;
@@ -283,17 +279,6 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
                 } else {
                     generatedCords.add(timedCord);
                 }
-            }
-
-            synchronized (f) {
-                if (f.contains(next.id)) {
-                    System.out.println(next.x + " " + next.z + " second time! newObject=" + g.contains(next));
-                    synchronized (queue) {
-
-                    }
-                }
-                f.add(next.id);
-                g.add(next);
             }
 
             debug_async2++;
