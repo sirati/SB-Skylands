@@ -7,7 +7,7 @@ import org.bukkit.generator.ChunkGenerator;
 import java.util.Random;
 
 /**
- * Created by sirati97 on 12.06.2016.
+ * Created by sirati97 on 12.06.2016 for sb-skylands.
  */
 public class MultiCoreChunkData extends TimedCord2d {
     public volatile boolean awaitChunk = false;

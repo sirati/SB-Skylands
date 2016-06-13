@@ -149,9 +149,6 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
 //                        System.out.println("Generated new chunk at x=" + chunkX + ", z=" +chunkZ + ", data=" + (data==null) + ", addedChunks="+cords.size());
 //                    }
                     for (Cord2d cord:cords) {
-                        if (Math.abs(cord.x) > 5 || Math.abs(cord.z) > 5) {
-                            System.out.println(cord);
-                        }
                         generateChunkDataIfNeeded(world, random, chunkX + cord.x, chunkZ + cord.z);
                     }
 
