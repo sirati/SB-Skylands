@@ -3,14 +3,17 @@ package de.sirati97.sb.skylands.gen.multicore;
 import de.sirati97.sb.skylands.SkylandsPlugin;
 import de.sirati97.sb.skylands.util.Cleanable;
 import de.sirati97.sb.skylands.util.CleanupRunnable;
+import net.minecraft.server.v1_10_R1.BiomeBase;
 import net.minecraft.server.v1_10_R1.ChunkProviderServer;
 import net.minecraft.server.v1_10_R1.ChunkRegionLoader;
 import net.minecraft.server.v1_10_R1.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.block.CraftBlock;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
@@ -205,7 +208,7 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
                     return;
                 } else {
                     //System.out.println("will gen async x="+chunkX+", z="+chunkZ);
-                    data = new MultiCoreChunkData(world, random, chunkX, chunkZ, id, biomeGrid);
+                    data = new MultiCoreChunkData(world, random, chunkX, chunkZ, id, getBiomeGrid(world, chunkX, chunkZ));
                     dataMap.put(id, data);
                 }
             }
@@ -227,6 +230,28 @@ public class MultiCoreGenerator extends ChunkGenerator implements Cleanable {
             return chunkLoader.chunkExists(nmsWorld, chunkX, chunkZ);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private BiomeGrid getBiomeGrid(World world, int chunkX, int chunkZ) {
+        WorldServer nmsWorld = ((CraftWorld)world).getHandle();
+        CustomBiomeGrid biomeGrid = new CustomBiomeGrid();
+        biomeGrid.biome = new BiomeBase[256];
+        nmsWorld.getWorldChunkManager().getBiomeBlock(biomeGrid.biome, chunkX << 4, chunkZ << 4, 16, 16);
+        return biomeGrid;
+    }
+
+    private static class CustomBiomeGrid implements BiomeGrid {
+        BiomeBase[] biome;
+
+        @Override
+        public Biome getBiome(int x, int z) {
+            return CraftBlock.biomeBaseToBiome(biome[(z << 4) | x]);
+        }
+
+        @Override
+        public void setBiome(int x, int z, Biome bio) {
+            biome[(z << 4) | x] = CraftBlock.biomeToBiomeBase(bio);
         }
     }
 
