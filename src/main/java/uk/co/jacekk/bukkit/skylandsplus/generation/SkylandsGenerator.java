@@ -96,8 +96,7 @@ public class SkylandsGenerator extends org.bukkit.generator.ChunkGenerator imple
 
     private int offset;
     private int high = 128;
-    private boolean only, stronghold;
-    private boolean mineshaft = true;
+    private boolean only, stronghold, mineshaft;
     private boolean canyon = true;
     private boolean village = true;
     private boolean largeFeature = true;
