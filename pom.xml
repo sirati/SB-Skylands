@@ -3,7 +3,7 @@
 
 	<groupId>de.sirati97.sb</groupId>
 	<artifactId>SB-Skylands</artifactId>
-	<version>0.17-SNAPSHOT</version>
+	<version>0.18-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>

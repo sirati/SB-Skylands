@@ -7,3 +7,11 @@ authors: ['Other Autors of SkylandsPlus','sirati97']
 load: startup
 softdepend: ['SB-Base']
 loadbefore: ['SB-Plots']
+commands:
+    debug-multicore-generation:
+        description: 'prints out debug information of the multicore genertor'
+        usage: '<command> [world]'
+        permission: sb.skylands.debug
+permissions:
+   sb.skylands.debug:
+       default: op
