@@ -1,4 +1,4 @@
-package uk.co.jacekk.bukkit.skylandsplus.generation;
+package de.sirati97.sb.skylands.gen.pop;
 
 import de.sirati97.sb.skylands.gen.biome.nms.BiomeJungleFix;
 import net.minecraft.server.v1_10_R1.BiomeBase;

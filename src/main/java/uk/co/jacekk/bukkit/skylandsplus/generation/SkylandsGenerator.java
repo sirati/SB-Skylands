@@ -4,6 +4,7 @@ import de.sirati97.sb.skylands.BiomesUtil;
 import de.sirati97.sb.skylands.gen.multicore.Cord2d;
 import de.sirati97.sb.skylands.gen.multicore.IAsyncGenerator;
 import de.sirati97.sb.skylands.gen.multicore.TimedCord2d;
+import de.sirati97.sb.skylands.gen.pop.BiomePopulator;
 import de.sirati97.sb.skylands.gen.pop.SkyGlowstonePopulator;
 import de.sirati97.sb.skylands.gen.pop.nms.WorldGenSecondaryCaves;
 import de.sirati97.sb.skylands.gen.pop.nms.WorldGenSkyGlowstone;
@@ -95,7 +96,8 @@ public class SkylandsGenerator extends org.bukkit.generator.ChunkGenerator imple
 
     private int offset;
     private int high = 128;
-    private boolean only, stronghold, mineshaft;
+    private boolean only, stronghold;
+    private boolean mineshaft = true;
     private boolean canyon = true;
     private boolean village = true;
     private boolean largeFeature = true;

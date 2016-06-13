@@ -67,13 +67,6 @@ public class OrePopulator extends BlockPopulator {
         int worldChunkX = chunk.getX() * 16;
         int worldChunkZ = chunk.getZ() * 16;
         if (world.getEnvironment() == Environment.NORMAL) {
-            for (int i = 0; i < 10; i++) {
-                int x = worldChunkX + this.random.nextInt(16);
-                int z = worldChunkZ + this.random.nextInt(16);
-                int y = this.random.nextInt(128);
-
-                createClump(world, Material.GRAVEL, 32, x, y, z);
-            }
             for (int i = 0; i < 20; i++) {
                 int x = worldChunkX + this.random.nextInt(16);
                 int z = worldChunkZ + this.random.nextInt(16);
@@ -123,7 +116,7 @@ public class OrePopulator extends BlockPopulator {
 
 
             if (glowstone) {
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 4; i++) {
                     int x = worldChunkX + this.random.nextInt(16);
                     int z = worldChunkZ + this.random.nextInt(16);
                     int y = this.random.nextInt(128);
