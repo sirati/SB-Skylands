@@ -41,7 +41,7 @@
 		</dependency>
         <dependency>
             <groupId>de.sirati97.sb</groupId>
-            <artifactId>SB-Plots</artifactId>
+            <artifactId>SB-Plots-Stub</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 	</dependencies>
