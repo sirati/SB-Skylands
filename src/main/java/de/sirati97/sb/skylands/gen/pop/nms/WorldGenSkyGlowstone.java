@@ -1,11 +1,11 @@
 package de.sirati97.sb.skylands.gen.pop.nms;
 
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.Blocks;
-import net.minecraft.server.v1_10_R1.EnumDirection;
-import net.minecraft.server.v1_10_R1.Material;
-import net.minecraft.server.v1_10_R1.World;
-import net.minecraft.server.v1_10_R1.WorldGenerator;
+import net.minecraft.server.v1_11_R1.BlockPosition;
+import net.minecraft.server.v1_11_R1.Blocks;
+import net.minecraft.server.v1_11_R1.EnumDirection;
+import net.minecraft.server.v1_11_R1.Material;
+import net.minecraft.server.v1_11_R1.World;
+import net.minecraft.server.v1_11_R1.WorldGenerator;
 
 import java.util.Random;
 
