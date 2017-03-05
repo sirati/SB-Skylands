@@ -1,13 +1,13 @@
 package de.sirati97.sb.skylands.gen.pop;
 
-import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_11_R1.BlockPosition;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_11_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
 import uk.co.jacekk.bukkit.skylandsplus.generation.SkylandsGenerator;
 
@@ -20,7 +20,7 @@ public class SkyGlowstonePopulator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        net.minecraft.server.v1_10_R1.World nmsWorld = ((CraftWorld)world).getHandle();
+        net.minecraft.server.v1_11_R1.World nmsWorld = ((CraftWorld)world).getHandle();
         for (int i = 0; i < random.nextInt(3); i++) {
             Block block = chunk.getBlock(random.nextInt(15), 0, random.nextInt(15));
             int yCave = random.nextInt(7)+(random.nextBoolean()?2:1);
@@ -42,7 +42,7 @@ public class SkyGlowstonePopulator extends BlockPopulator {
                 SkylandsGenerator.worldGenSkyGlowstone.generate(nmsWorld, random, new BlockPosition(block.getX(), block.getY()-1, block.getZ()));
             }
         }
-        net.minecraft.server.v1_10_R1.Chunk c = ((CraftChunk) chunk).getHandle();
+        net.minecraft.server.v1_11_R1.Chunk c = ((CraftChunk) chunk).getHandle();
         c.initLighting();
     }
 

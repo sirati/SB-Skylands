@@ -34,16 +34,21 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.10-R0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>de.sirati97</groupId>
-			<artifactId>oilspigot</artifactId>
-			<version>1.10-R0.1-SNAPSHOT</version>
-		</dependency>
         <dependency>
             <groupId>de.sirati97.sb</groupId>
             <artifactId>SB-Plots-Stub</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+	 <dependency>
+	  <groupId>minecraft_server</groupId>
+	  <artifactId>minecraft_server</artifactId>
+	  <version>1.11.2</version>
+	 </dependency>
+	 <dependency>
+	  <groupId>spigot</groupId>
+	  <artifactId>spigot</artifactId>
+	  <version>1.11.2-R0.1-SNAPSHOT</version>
+	 </dependency>
 	</dependencies>
 
 </project>

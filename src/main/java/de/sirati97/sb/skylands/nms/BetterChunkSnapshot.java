@@ -1,8 +1,8 @@
 package de.sirati97.sb.skylands.nms;
 
-import net.minecraft.server.v1_10_R1.Block;
-import net.minecraft.server.v1_10_R1.ChunkSnapshot;
-import net.minecraft.server.v1_10_R1.IBlockData;
+import net.minecraft.server.v1_11_R1.Block;
+import net.minecraft.server.v1_11_R1.ChunkSnapshot;
+import net.minecraft.server.v1_11_R1.IBlockData;
 
 import java.lang.reflect.Field;
 
